@@ -99,3 +99,27 @@ def fit(x_train, y_train, model, classes):
                 # Train the model on the batch
                 model.partial_fit(batch_x, batch_y, classes=classes)
     return model
+
+
+def prediction(tree_list_, test_data, threshold):
+    """
+    :param tree_list_:
+    :param test_data:
+    :param threshold: the smaller the threshold, the greater the probability of determining it as a positive example.
+    :return:
+    """
+    print_list = []
+    predict_list = []
+    for i in tree_list_:
+        print(i.predict(test_data))
+        predict_list.append(i.predict(test_data))
+    for j in range(len(test_data)):
+        count = 0
+        for k in range(len(tree_list_)):
+            count = predict_list[k][j] + count
+        print(count)
+        if count >= len(test_data) * threshold:
+            print_list.append(1)
+        else:
+            print_list.append(0)
+    return print_list
