@@ -1,9 +1,12 @@
 """
 Cost sensitive software defect prediction
 """
+from typing import List
+
 from sklearn import tree
 import random
 from sklearn.linear_model import SGDClassifier
+from sklearn.tree import DecisionTreeClassifier
 
 
 def ensemble_tree(num):
@@ -37,7 +40,7 @@ def ensemble_hybrid_tree(num, sgd_n):
     return tree_list_
 
 
-def building_under_sampling_data(xdata, ydata, rate, tree_list):
+def building_under_sampling_data(xdata, ydata, tree_list: List[DecisionTreeClassifier]):
     pos_data_x = []
     pos_data_y = []
     neg_data_x = []
@@ -51,9 +54,13 @@ def building_under_sampling_data(xdata, ydata, rate, tree_list):
             neg_data_x.append(xdata[i])
             neg_data_y.append(ydata[i])
     pos_num = len(pos_data_x)
-    neg_num = int(len(neg_data_x) * rate)
+    print(f'pos_num:{len(pos_data_x)}, neg_num:{len(neg_data_x)}')
+    if len(neg_data_x) > len(pos_data_x):
+        sampled_neg_num = pos_num
+    else:
+        raise NotImplemented
     for j in range(len(tree_list)):
-        random_list = random.sample(range(0, len(neg_data_x)), neg_num)
+        random_list = random.sample(range(0, len(neg_data_x)), sampled_neg_num)
         for k in random_list:
             pos_data_x.append(neg_data_x[k])
             pos_data_y.append(neg_data_y[k])

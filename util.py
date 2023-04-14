@@ -1,8 +1,14 @@
+from typing import List
+
 import numpy as np
 import pandas as pd
+import warnings
 from scipy.io import arff
 from sklearn import preprocessing
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, precision_recall_fscore_support
+from sklearn.tree import DecisionTreeClassifier
+
+warnings.filterwarnings('ignore', message="X has feature names, but .* was fitted without feature names")
 
 
 def data_process(arff_data):
@@ -101,7 +107,7 @@ def fit(x_train, y_train, model, classes):
     return model
 
 
-def prediction(tree_list_, test_data, threshold):
+def prediction(tree_list_: List[DecisionTreeClassifier], test_data, threshold):
     """
     :param tree_list_:
     :param test_data:
@@ -111,13 +117,11 @@ def prediction(tree_list_, test_data, threshold):
     print_list = []
     predict_list = []
     for i in tree_list_:
-        print(i.predict(test_data))
         predict_list.append(i.predict(test_data))
     for j in range(len(test_data)):
         count = 0
         for k in range(len(tree_list_)):
             count = predict_list[k][j] + count
-        print(count)
         if count >= len(test_data) * threshold:
             print_list.append(1)
         else:
